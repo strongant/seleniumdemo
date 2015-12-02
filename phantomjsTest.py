@@ -164,7 +164,8 @@ def tryDownload():
                 status = eval(d).get('status')
                 print status
             elif d.find('{"content":') != -1:
-                print eval(d)
+                content = eval(d).get('content')
+                print 'content:', content
 
 
         # statusCode = data[0]
@@ -177,16 +178,16 @@ def tryDownload():
             # 重新下载一次
             tempData = download('/usr/bin/phantomjs', '../phantomjs/fetch.js', 'http://www.eatonhongkong.com/', 'utf-8',
                                 str(1000 * 5),
-                                str(1000 * 30), [],
+                                str(1000 * 60), [],
                                 {})
-            print 'tempData:',tempData
+            print 'tempData:', tempData
             for d in tempData:
                 if d.find('{"status":') != -1:
                     status = eval(d).get('status')
-                    print 'status:',status
+                    print 'status:', status
                 elif d.find('{"content":') != -1:
                     content = eval(d).get('content')
-                    print 'content:',content
+                    print 'content:', content
 
         else:
             print 'data:', data

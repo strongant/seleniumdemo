@@ -134,7 +134,7 @@ def download(phantomjs_path, scarping_js_path,
         reload(sys)
         sys.setdefaultencoding('utf-8')
         process = subprocess.Popen(args, close_fds=True, stdout=subprocess.PIPE, env=formated_env)
-        process.wait()
+        # process.wait()
         out = process.stdout.readlines()
         if process.stdin:
             process.stdin.close()
@@ -158,12 +158,18 @@ def tryDownload():
                     str(1000 * 10), [],
                     {})
     if data is not None:
-        print 'dictData:',''.join(data)
-        dictData = simplejson.loads(''.join(data))
-        statusCode = dictData['status']
-        print statusCode
-        arrs = statusCode.split(':')
-        status = arrs[1]
+        dict = {}
+        for d in data:
+            if d.find('{"status":') != -1:
+                status = eval(d).get('status')
+                print status
+            elif d.find('{"content":') != -1:
+                print eval(d)
+
+
+        # statusCode = data[0]
+        # print statusCode
+        # arrs = statusCode.split(':')
         if status.find('success') == -1:
             gc.collect()
             time.sleep(1)
@@ -173,10 +179,17 @@ def tryDownload():
                                 str(1000 * 5),
                                 str(1000 * 30), [],
                                 {})
-            dictData2 = eval(tempData)
-            print 'datatemp:', dictData2.get('content')
+            print 'tempData:',tempData
+            for d in tempData:
+                if d.find('{"status":') != -1:
+                    status = eval(d).get('status')
+                    print 'status:',status
+                elif d.find('{"content":') != -1:
+                    content = eval(d).get('content')
+                    print 'content:',content
+
         else:
-            print 'data:', dictData.get('content')
+            print 'data:', data
     else:
         print '抓取失败:'
 
@@ -197,3 +210,6 @@ if __name__ == '__main__':
     #     "请求超时..."
     # print data
     tryDownload()
+    # st = '{"status":"fail"}'
+    # d =  eval(st)
+    # print d['status']
